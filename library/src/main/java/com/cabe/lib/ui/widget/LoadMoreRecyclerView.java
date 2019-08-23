@@ -103,7 +103,7 @@ public class LoadMoreRecyclerView extends RecyclerView {
             if(lastView != null) {
                 //lastView为空，表示没滚动到底
                 lastView.getGlobalVisibleRect(rect);
-                if(rect.bottom < getHeight()) {
+                if(rect.bottom <= getHeight()) {
                     if(scrollCallback != null) {
                         scrollCallback.onScrollToBottom();
                     }
