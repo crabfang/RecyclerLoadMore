@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadData() {
         curPageIndex = 0;
         List<String> dataList = new ArrayList<>();
-        for(int i=0;i<10;i++) {
+        for(int i=0;i<4;i++) {
             dataList.add("loadData_" + i);
         }
         mMyAdapter.setDataList(dataList);

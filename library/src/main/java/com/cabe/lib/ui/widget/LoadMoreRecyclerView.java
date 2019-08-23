@@ -95,6 +95,8 @@ public class LoadMoreRecyclerView extends RecyclerView {
     }
 
     private void judgeDataFullPage() {
+        if(!autoLoad) return;
+
         postDelayed(() -> {
             RecyclerView.LayoutManager layoutManager = getLayoutManager();
             Rect rect = new Rect();
@@ -103,13 +105,13 @@ public class LoadMoreRecyclerView extends RecyclerView {
             if(lastView != null) {
                 //lastView为空，表示没滚动到底
                 lastView.getGlobalVisibleRect(rect);
-                if(rect.bottom <= getHeight()) {
+                if(rect.bottom <= layoutManager.getHeight()) {
                     if(scrollCallback != null) {
                         scrollCallback.onScrollToBottom();
                     }
                 }
             }
-        }, 400);
+        }, 200);
     }
 
     @Override
