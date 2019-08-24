@@ -7,9 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.cabe.lib.ui.loadmore.R;
 
@@ -28,6 +30,10 @@ public class LoadMoreRecyclerView extends RecyclerView {
     private RecyclerViewScrollCallback scrollCallback;
     private OnChildComputeCallback childrenCallback;
     private InnerAdapter innerAdapter = new InnerAdapter();
+
+    private String loadTips = "";
+    private String endTips = "";
+
     public LoadMoreRecyclerView(Context context) {
         this(context, null);
     }
@@ -85,6 +91,14 @@ public class LoadMoreRecyclerView extends RecyclerView {
 
     public void setOnChildrenCallback(OnChildComputeCallback childrenCallback) {
         this.childrenCallback = childrenCallback;
+    }
+
+    public void setLoadTips(String loadTips) {
+        this.loadTips = loadTips;
+    }
+
+    public void setEndTips(String endTips) {
+        this.endTips = endTips;
     }
 
     public void setAutoLoad(boolean autoLoad) {
@@ -226,6 +240,7 @@ public class LoadMoreRecyclerView extends RecyclerView {
             if(position < getRealCount()) {
                 realAdapter.onBindViewHolder(holder, position);
             } else {
+                String customLabelStr = "";
                 if(holder instanceof LoadViewHolder) {
                     ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
                     if(params instanceof StaggeredGridLayoutManager.LayoutParams) {
@@ -234,9 +249,17 @@ public class LoadMoreRecyclerView extends RecyclerView {
                     if(onLoadViewListener != null) {
                         onLoadViewListener.onLoadViewBind(holder.itemView);
                     }
+                    customLabelStr = loadTips;
                 } else if(holder instanceof EndViewHolder) {
                     if(onEndViewListener != null) {
                         onEndViewListener.onEndViewBind(holder.itemView);
+                    }
+                    customLabelStr = endTips;
+                }
+                if(!TextUtils.isEmpty(customLabelStr)) {
+                    TextView label = holder.itemView.findViewById(R.id.load_more_widget_bottom_end_label);
+                    if(label != null) {
+                        label.setText(customLabelStr);
                     }
                 }
             }

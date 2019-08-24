@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.activity_main_recycler);
+        recyclerView.setLoadTips("请稍后，还有更多内容哦");
+        recyclerView.setEndTips("很遗憾，没有更多内容了");
         recyclerView.setAdapter(mMyAdapter);
         recyclerView.setScrollCallback(() -> recyclerView.postDelayed(() -> appendData(++ curPageIndex), 1000));
         recyclerView.postDelayed(this::loadData, 1000);
