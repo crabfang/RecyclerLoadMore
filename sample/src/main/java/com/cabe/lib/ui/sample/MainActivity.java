@@ -1,5 +1,6 @@
 package com.cabe.lib.ui.sample;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -57,6 +58,24 @@ public class MainActivity extends AppCompatActivity {
                 TextView label = (TextView) ((ViewGroup) loadView).getChildAt(0);
                 label.setTextColor(0xFF00FFFF);
             }
+        });
+        recyclerView.setOnChildrenCallback(recyclerView -> {
+            boolean isEnough = true;
+            int parentHeight = ((ViewGroup)recyclerView.getParent()).getHeight();
+            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+            int canShowHeight = Math.max(parentHeight, layoutManager.getHeight());
+
+            Rect rect = new Rect();
+            int childPosition = layoutManager.getItemCount() > 1 ? layoutManager.getItemCount() - 2 : 0;
+            View lastView = layoutManager.findViewByPosition(childPosition);
+            if(lastView != null) {
+                //lastView为空，表示没滚动到底
+                lastView.getGlobalVisibleRect(rect);
+                if(rect.bottom <= canShowHeight) {
+                    isEnough = false;
+                }
+            }
+            return isEnough;
         });
 
         SwipeRefreshLayout swipeLayout = findViewById(R.id.activity_main_swipe);

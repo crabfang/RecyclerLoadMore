@@ -26,6 +26,7 @@ public class LoadMoreRecyclerView extends RecyclerView {
     private OnEndViewListener onEndViewListener;
     private OnLoadViewListener onLoadViewListener;
     private RecyclerViewScrollCallback scrollCallback;
+    private OnChildComputeCallback childrenCallback;
     private InnerAdapter innerAdapter = new InnerAdapter();
     public LoadMoreRecyclerView(Context context) {
         this(context, null);
@@ -82,6 +83,10 @@ public class LoadMoreRecyclerView extends RecyclerView {
         this.scrollCallback = scrollCallback;
     }
 
+    public void setOnChildrenCallback(OnChildComputeCallback childrenCallback) {
+        this.childrenCallback = childrenCallback;
+    }
+
     public void setAutoLoad(boolean autoLoad) {
         this.autoLoad = autoLoad;
     }
@@ -98,6 +103,7 @@ public class LoadMoreRecyclerView extends RecyclerView {
         if(!autoLoad) return;
 
         postDelayed(() -> {
+            boolean isEnough = true;
             RecyclerView.LayoutManager layoutManager = getLayoutManager();
             Rect rect = new Rect();
             int childPosition = layoutManager.getItemCount() > 1 ? layoutManager.getItemCount() - 2 : 0;
@@ -106,10 +112,14 @@ public class LoadMoreRecyclerView extends RecyclerView {
                 //lastView为空，表示没滚动到底
                 lastView.getGlobalVisibleRect(rect);
                 if(rect.bottom <= layoutManager.getHeight()) {
-                    if(scrollCallback != null) {
-                        scrollCallback.onScrollToBottom();
-                    }
+                    isEnough = false;
                 }
+            }
+            if(childrenCallback != null) {
+                isEnough = childrenCallback.isChildrenNotEnough(this);
+            }
+            if(!isEnough && scrollCallback != null) {
+                scrollCallback.onScrollToBottom();
             }
         }, 200);
     }
@@ -235,5 +245,9 @@ public class LoadMoreRecyclerView extends RecyclerView {
 
     public interface RecyclerViewScrollCallback {
         void onScrollToBottom();
+    }
+
+    public interface OnChildComputeCallback {
+        boolean isChildrenNotEnough(LoadMoreRecyclerView recyclerView);
     }
 }

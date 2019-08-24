@@ -74,3 +74,26 @@ dependencies {
         })
     
 ```
+
+自定义计算ChildView不足RecyclerView高度
+
+```java
+        recyclerView.setOnChildrenCallback(recyclerView -> {
+            boolean isEnough = true;
+            int parentHeight = ((ViewGroup)recyclerView.getParent()).getHeight();
+            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+            int canShowHeight = Math.max(parentHeight, layoutManager.getHeight());
+
+            Rect rect = new Rect();
+            int childPosition = layoutManager.getItemCount() > 1 ? layoutManager.getItemCount() - 2 : 0;
+            View lastView = layoutManager.findViewByPosition(childPosition);
+            if(lastView != null) {
+                //lastView为空，表示没滚动到底
+                lastView.getGlobalVisibleRect(rect);
+                if(rect.bottom <= canShowHeight) {
+                    isEnough = false;
+                }
+            }
+            return isEnough;
+        });
+```
