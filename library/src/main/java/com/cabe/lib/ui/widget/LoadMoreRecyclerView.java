@@ -125,7 +125,7 @@ public class LoadMoreRecyclerView extends RecyclerView {
             if(lastView != null) {
                 //lastView为空，表示没滚动到底
                 lastView.getGlobalVisibleRect(rect);
-                if(rect.bottom <= layoutManager.getHeight()) {
+                if(rect.bottom <= layoutManager.getHeight() && !flagEnd) {
                     isEnough = false;
                 }
             }
